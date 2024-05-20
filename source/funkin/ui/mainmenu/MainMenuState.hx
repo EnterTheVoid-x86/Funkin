@@ -20,6 +20,7 @@ import funkin.audio.FunkinSound;
 import flixel.tweens.FlxTween;
 import funkin.ui.MusicBeatState;
 import flixel.util.FlxTimer;
+import lime.app.Application;
 import funkin.ui.AtlasMenuList;
 import funkin.ui.freeplay.FreeplayState;
 import funkin.ui.MenuList;
@@ -38,6 +39,8 @@ import io.newgrounds.NG;
 class MainMenuState extends MusicBeatState
 {
   var menuItems:MenuTypedList<AtlasMenuItem>;
+
+  public static var vSlicePlusPlusVersion:String = "0.1.0a";
 
   var magenta:FlxSprite;
   var camFollow:FlxObject;
@@ -108,6 +111,16 @@ class MainMenuState extends MusicBeatState
       openSubState(new FreeplayState());
     });
 
+    // Borrowed from Psych Engine lol
+    var vSlicePlusPlusVer:FlxText = new FlxText(12, FlxG.height - 44, 0, "V-Slice++ v" + vSlicePlusPlusVersion, 12);
+    vSlicePlusPlusVer.scrollFactor.set();
+    vSlicePlusPlusVer.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    add(vSlicePlusPlusVer);
+    var fnfVer:FlxText = new FlxText(12, FlxG.height - 24, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
+    fnfVer.scrollFactor.set();
+    fnfVer.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    add(fnfVer);
+
     #if CAN_OPEN_LINKS
     // In order to prevent popup blockers from triggering,
     // we need to open the link as an immediate result of a keypress event,
@@ -153,7 +166,6 @@ class MainMenuState extends MusicBeatState
     super.create();
 
     // This has to come AFTER!
-    this.leftWatermarkText.text = Constants.VERSION;
     // this.rightWatermarkText.text = "blablabla test";
 
     // NG.core.calls.event.logEvent('swag').send();

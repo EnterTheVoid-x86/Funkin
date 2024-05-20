@@ -842,7 +842,7 @@ class PlayState extends MusicBeatSubState
     super.update(elapsed);
 
     var list = FlxG.sound.list;
-    // updateHealthBar();
+    updateHealthBar();
     updateScoreText();
 
     // Handle restarting the song when needed (player death or pressing Retry)

@@ -7,6 +7,22 @@ import funkin.Paths;
 import funkin.Preferences;
 import flixel.FlxG; // This one in particular causes a compile error if you're using macros.
 import flixel.system.debug.watch.Tracker;
+import flixel.system.FlxAssets;
+import flixel.sound.FlxSound;
+import flixel.FlxSprite;
+import flixel.FlxCamera;
+import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.group.FlxSpriteGroup;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import haxe.ds.IntMap;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
 
 // These are great.
 using Lambda;

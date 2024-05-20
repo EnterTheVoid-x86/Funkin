@@ -470,6 +470,16 @@ class PlayState extends MusicBeatSubState
    */
   public var iconP2:HealthIcon;
 
+  var iconRes = 150;
+
+  static var defaultHBGreen = Constants.COLOR_HEALTH_BAR_GREEN;
+  static var defaultHBRed = Constants.COLOR_HEALTH_BAR_RED;
+
+  static var bfColor = defaultHBGreen;
+  static var dadColor = defaultHBRed;
+
+  var inPlay = false;
+
   /**
    * The sprite group containing active player's strumline notes.
    */
@@ -675,6 +685,11 @@ class PlayState extends MusicBeatSubState
     {
       initStage();
       initCharacters();
+      inPlay = Std.isOfType(FlxG.state, PlayState);
+      if (instance != null && inPlay)
+      {
+        updateHealthBarColors();
+      }
     }
     else
     {
@@ -805,6 +820,19 @@ class PlayState extends MusicBeatSubState
     return true;
   }
 
+  function updateScoreText():Void
+  {
+    // TODO: Add functionality for modules to update the score text.
+    if (isBotPlayMode)
+    {
+      scoreText.text = 'Bot Play Enabled';
+    }
+    else
+    {
+      scoreText.text = 'Score:' + songScore;
+    }
+  }
+
   public override function update(elapsed:Float):Void
   {
     // TOTAL: 9.42% CPU Time when profiled in VS 2019.
@@ -814,7 +842,7 @@ class PlayState extends MusicBeatSubState
     super.update(elapsed);
 
     var list = FlxG.sound.list;
-    updateHealthBar();
+    // updateHealthBar();
     updateScoreText();
 
     // Handle restarting the song when needed (player death or pressing Retry)
@@ -1546,6 +1574,68 @@ class PlayState extends MusicBeatSubState
     scoreText.cameras = [camHUD];
   }
 
+  function updateHealthBarColors()
+  {
+    bfColor = getDominantColor(iconP1);
+    trace(bfColor);
+    dadColor = getDominantColor(iconP2);
+    trace(dadColor);
+
+    // Handle nullable return values
+    if (bfColor == null || dadColor == null)
+    {
+      // Handle null case, possibly with default colors
+      bfColor = defaultHBGreen;
+      dadColor = defaultHBRed;
+    }
+
+    fillHealthBar();
+  }
+
+  function fillHealthBar()
+  {
+    bfColor = (bfColor != null ? bfColor : defaultHBGreen);
+    dadColor = (dadColor != null ? dadColor : defaultHBRed);
+
+    trace(bfColor);
+    trace(dadColor);
+
+    if (!inPlay || healthBar == null || dadColor == null || bfColor == null) return;
+
+    healthBar.createFilledBar(dadColor, bfColor);
+  }
+
+  function getDominantColor(sprite:FlxSprite):Int
+  {
+    var countByColor:Map<Int, Int> = [];
+    for (col in 0...sprite.frameWidth)
+    {
+      for (row in 0...sprite.frameHeight)
+      {
+        var colorOfThisPixel:Int = sprite.pixels.getPixel32(col, row);
+        if (colorOfThisPixel != 0)
+        {
+          if (countByColor.exists(colorOfThisPixel)) countByColor[colorOfThisPixel] = countByColor[colorOfThisPixel] + 1;
+          else if (countByColor[colorOfThisPixel] != 13520687 - (2 * 13520687)) countByColor[colorOfThisPixel] = 1;
+        }
+      }
+    }
+
+    var maxCount = 0;
+    var maxKey:Int = 0; // after the loop this will store the max color
+    countByColor[FlxColor.BLACK] = 0;
+    for (key in countByColor.keys())
+    {
+      if (countByColor[key] >= maxCount)
+      {
+        maxCount = countByColor[key];
+        maxKey = key;
+      }
+    }
+    countByColor = [];
+    return maxKey;
+  }
+
   /**
    * Generates the stage and all its props.
    */
@@ -2032,19 +2122,6 @@ class PlayState extends MusicBeatSubState
   /**
    * Updates the position and contents of the score display.
    */
-  function updateScoreText():Void
-  {
-    // TODO: Add functionality for modules to update the score text.
-    if (isBotPlayMode)
-    {
-      scoreText.text = 'Bot Play Enabled';
-    }
-    else
-    {
-      scoreText.text = 'Score:' + songScore;
-    }
-  }
-
   /**
    * Updates the values of the health bar.
    */

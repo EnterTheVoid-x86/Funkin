@@ -68,6 +68,8 @@ class BaseCharacter extends Bopper
    */
   public var characterOrigin(get, never):FlxPoint;
 
+  public var iconColor = null;
+
   function get_characterOrigin():FlxPoint
   {
     var xPos = (width / 2); // Horizontal center

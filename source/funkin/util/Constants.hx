@@ -115,12 +115,12 @@ class Constants
   /**
    * The color used by the enemy health bar.
    */
-  public static final COLOR_HEALTH_BAR_RED:FlxColor = 0xFFFF0000;
+  public static var COLOR_HEALTH_BAR_RED:FlxColor = 0xFFFF0000;
 
   /**
    * The color used by the player health bar.
    */
-  public static final COLOR_HEALTH_BAR_GREEN:FlxColor = 0xFF66FF33;
+  public static var COLOR_HEALTH_BAR_GREEN:FlxColor = 0xFF66FF33;
 
   /**
    * The base colors used by notes.

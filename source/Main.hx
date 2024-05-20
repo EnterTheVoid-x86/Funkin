@@ -94,7 +94,6 @@ class Main extends Sprite
 
     // addChild gets called by the user settings code.
     fpsCounter = new FPS(10, 3, 0xFFFFFF);
-
     #if !html5
     // addChild gets called by the user settings code.
     // TODO: disabled on HTML5 (todo: find another method that works?)

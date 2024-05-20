@@ -149,6 +149,26 @@ class PlayState extends MusicBeatSubState
    */
   public static var instance:PlayState = null;
 
+  public static var ratingStuff:Array<Dynamic> = [
+    ['You\'re awful!', 0.2], // From 0% to 19%
+    ['Shit.', 0.4], // From 20% to 39%
+    ['Yikes...', 0.5], // From 40% to 49%
+    ['You can do better!', 0.6], // From 50% to 59%
+    ['Almost...', 0.7], // From 60% to 69%
+    ['Good', 0.8], // From 70% to 79%
+    ['Great!', 0.9], // From 80% to 89%
+    ['Perfect!', 1], // From 90% to 99%
+    ['Marvelous!', 1] // The value on this one isn't used actually, since Perfect is always "1"
+  ];
+
+  var misses:Int = 0;
+  var ratingPercent:Float;
+  var ratingName:String = "?";
+  var ratingFC:String = "Clear";
+
+  var totalNotesHit:Float = 0.0;
+  var totalNotesPlayed:Int = 0;
+
   /**
    * This sucks. We need this because FlxG.resetState(); assumes the constructor has no arguments.
    * @see https://github.com/HaxeFlixel/flixel/issues/2541
@@ -820,17 +840,74 @@ class PlayState extends MusicBeatSubState
     return true;
   }
 
-  function updateScoreText():Void
+  public dynamic function updateScoreText(miss:Bool = false)
   {
-    // TODO: Add functionality for modules to update the score text.
-    if (isBotPlayMode)
+    calculateRating();
+
+    var str:String = ratingName;
+    if (totalNotesPlayed != 0)
     {
-      scoreText.text = 'Bot Play Enabled';
+      var percent:Float = floorDecimal(ratingPercent * 100, 2);
+      str += ' (' + percent + '%) - ' + ratingFC;
+    }
+
+    var tempScore:String = 'Score: ' + (songScore != null ? songScore : 0) + ' | Misses: ' + misses + ' | Accuracy: ' + str;
+
+    scoreText.text = tempScore + '\n';
+  }
+
+  function calculateRating()
+  {
+    if (totalNotesPlayed != 0)
+    {
+      ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalNotesPlayed));
+
+      ratingName = ratingStuff[ratingStuff.length - 1][0]; // Uses last string
+      if (ratingPercent < 1)
+      {
+        for (i in 0...ratingStuff.length - 1)
+        {
+          if (ratingPercent < ratingStuff[i][1])
+          {
+            ratingName = ratingStuff[i][0];
+            break;
+          }
+        }
+      }
+    }
+
+    ratingFC = '';
+    if (misses == 0)
+    {
+      var tallies = Highscore.tallies;
+
+      var sicks = tallies.sick;
+      var goods = tallies.good;
+      var bads = tallies.bad;
+      var shits = tallies.shit;
+
+      if (bads > 0 || shits > 0) ratingFC = 'FC';
+      else if (goods > 0) ratingFC = 'GFC';
+      else if (sicks > 0) ratingFC = 'SFC';
     }
     else
     {
-      scoreText.text = 'Score:' + songScore;
+      if (misses < 10) ratingFC = 'SDCB';
+      else
+        ratingFC = 'Clear';
     }
+  }
+
+  public static function floorDecimal(value:Float, decimals:Int):Float
+  {
+    if (decimals < 1) return Math.floor(value);
+
+    var tempMult:Float = 1;
+    for (i in 0...decimals)
+      tempMult *= 10;
+
+    var newValue:Float = Math.floor(value * tempMult);
+    return newValue / tempMult;
   }
 
   public override function update(elapsed:Float):Void
@@ -842,7 +919,7 @@ class PlayState extends MusicBeatSubState
     super.update(elapsed);
 
     var list = FlxG.sound.list;
-    // updateHealthBar();
+    updateHealthBar();
     updateScoreText();
 
     // Handle restarting the song when needed (player death or pressing Retry)
@@ -1562,10 +1639,12 @@ class PlayState extends MusicBeatSubState
     add(healthBar);
 
     // The score text below the health bar.
-    scoreText = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, '', 20);
-    scoreText.setFormat(Paths.font('vcr.ttf'), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    scoreText = new FlxText(0, healthBar.y + 40, FlxG.width, "", 20);
+    scoreText.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    scoreText.borderSize = 1.25;
     scoreText.scrollFactor.set();
-    scoreText.zIndex = 802;
+    scoreText.zIndex = 1000;
+    updateScoreText(false);
     add(scoreText);
 
     // Move the health bar to the HUD camera.
@@ -2515,6 +2594,23 @@ class PlayState extends MusicBeatSubState
     // Calling event.cancelEvent() skips all the other logic! Neat!
     if (event.eventCanceled) return;
 
+    if (!inPlay || event.healthChange == 0) return;
+    var ratingMod = switch (event.judgement)
+    {
+      case 'good':
+        0.67;
+      case 'bad':
+        0.34;
+      case 'shit':
+        0;
+      default:
+        1; // this should only trigger on sick judgements
+    }
+
+    totalNotesPlayed++;
+    totalNotesHit += ratingMod;
+    updateScoreText(false);
+
     // Display the combo meter and add the calculation to the score.
     popUpScore(note, event.score, event.judgement, event.healthChange);
   }
@@ -2583,6 +2679,12 @@ class PlayState extends MusicBeatSubState
       vocals.playerVolume = 0;
       FunkinSound.playOnce(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.5, 0.6));
     }
+
+    if (!inPlay || healthChange == 0) return;
+
+    misses++;
+    totalNotesPlayed++;
+    updateScoreText(true);
   }
 
   /**
@@ -2638,6 +2740,11 @@ class PlayState extends MusicBeatSubState
       vocals.playerVolume = 0;
       FunkinSound.playOnce(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
     }
+    if (!inPlay || event.healthChange == 0) return;
+
+    misses++;
+    totalNotesPlayed++;
+    updateScoreText(true);
   }
 
   /**

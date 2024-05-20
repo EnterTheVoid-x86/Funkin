@@ -32,6 +32,8 @@ import openfl.media.Video;
 import openfl.net.NetStream;
 import funkin.api.newgrounds.NGio;
 import openfl.display.BlendMode;
+import funkin.ui.flashing.*;
+import flixel.addons.transition.FlxTransitionableState;
 
 #if desktop
 #end
@@ -67,9 +69,22 @@ class TitleState extends MusicBeatState
     // DEBUG BULLSHIT
 
     // netConnection.addEventListener(MouseEvent.MOUSE_DOWN, overlay_onMouseDown);
-    new FlxTimer().start(1, function(tmr:FlxTimer) {
-      startIntro();
-    });
+    if (Preferences.flashingLightsWarnShown == false && !FlashingState.leftState)
+    {
+      FlxTransitionableState.skipNextTransIn = true;
+      FlxTransitionableState.skipNextTransOut = true;
+      FlxG.switchState(new FlashingState());
+    }
+    else
+    {
+      if (initialized) startIntro();
+      else
+      {
+        new FlxTimer().start(1, function(tmr:FlxTimer) {
+          startIntro();
+        });
+      }
+    }
   }
 
   function client_onMetaData(metaData:Dynamic)

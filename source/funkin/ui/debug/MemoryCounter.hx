@@ -3,6 +3,7 @@ package funkin.ui.debug;
 import funkin.util.MemoryUtil;
 import openfl.text.TextFormat;
 import openfl.system.System;
+import openfl.filters.*;
 import openfl.text.TextField;
 
 class MemoryCounter extends TextField
@@ -21,7 +22,11 @@ class MemoryCounter extends TextField
     this.width = 500;
     this.selectable = false;
     this.mouseEnabled = false;
-    defaultTextFormat = new TextFormat("_sans", 12, color);
+    filters = [
+      new DropShadowFilter(4, 45, 0, 0.8, 8, 8),
+      new GlowFilter(0x000000, 1, 8, 8, 10, 1, false, false)
+    ];
+    defaultTextFormat = new TextFormat(openfl.utils.Assets.getFont("assets/fonts/vcr.ttf").fontName, 14, color);
     text = "RAM: ";
 
     #if flash

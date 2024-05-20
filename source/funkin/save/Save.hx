@@ -53,7 +53,8 @@ class Save
   public function new(?data:RawSaveData)
   {
     if (data == null) this.data = Save.getDefault();
-    else this.data = data;
+    else
+      this.data = data;
   }
 
   public static function getDefault():RawSaveData
@@ -82,9 +83,10 @@ class Save
           // Reasonable defaults.
           naughtyness: true,
           downscroll: false,
-          centerStrumlines: false,
-          ghostTapping: false,
+          centerStrumlines: true,
+          ghostTapping: true,
           flashingLights: true,
+          flashingLightsWarnShown: false,
           zoomCamera: true,
           debugDisplay: false,
           autoPause: true,
@@ -457,20 +459,21 @@ class Save
 
   public function hasBeatenLevel(levelId:String, ?difficultyList:Array<String>):Bool
   {
-    if (difficultyList == null)
-    {
-      difficultyList = ['easy', 'normal', 'hard'];
-    }
-    for (difficulty in difficultyList)
-    {
-      var score:Null<SaveScoreData> = getLevelScore(levelId, difficulty);
-      // TODO: Do we need to check accuracy/score here?
-      if (score != null)
-      {
-        return true;
-      }
-    }
-    return false;
+    return true;
+    // if (difficultyList == null)
+    // {
+    //   difficultyList = ['easy', 'normal', 'hard'];
+    // }
+    // for (difficulty in difficultyList)
+    // {
+    //   var score:Null<SaveScoreData> = getLevelScore(levelId, difficulty);
+    //   // TODO: Do we need to check accuracy/score here?
+    //   if (score != null)
+    //   {
+    //     return true;
+    //   }
+    // }
+    // return false;
   }
 
   /**
@@ -605,16 +608,20 @@ class Save
 
   public function isCharacterUnlocked(characterId:String):Bool
   {
-    switch (characterId)
-    {
-      case 'bf':
-        return true;
-      case 'pico':
-        return hasBeatenLevel('weekend1');
-      default:
-        trace('Unknown character ID: ' + characterId);
-        return true;
-    }
+    // switch (characterId)
+    // {
+    //   case 'bf':
+    //     return true;
+    //   case 'pico':
+    //     return hasBeatenLevel('weekend1');
+    //   default:
+    //     trace('Unknown character ID: ' + characterId);
+    //     return true;
+    // }
+    return true;
+    /**We don't want to lock any characters, or songs behind a condition that checks
+     * if the level is beaten since this is an engine with QoL improvements. If a user
+     * wants to play a specific song they should have that choice.**/
   }
 
   /**
@@ -859,13 +866,15 @@ typedef SaveDataOptions =
    * If enabled, pressing any note buttons will not count as a miss.
    * @default `false`
    */
-   var ghostTapping:Bool;
+  var ghostTapping:Bool;
 
   /**
    * If disabled, flashing lights in the main menu and other areas will be less intense.
    * @default `true`
    */
   var flashingLights:Bool;
+
+  var flashingLightsWarnShown:Bool;
 
   /**
    * If disabled, the camera bump synchronized to the beat.

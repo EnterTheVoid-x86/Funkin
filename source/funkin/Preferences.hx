@@ -102,6 +102,21 @@ class Preferences
     return value;
   }
 
+  public static var flashingLightsWarnShown(get, set):Bool;
+
+  static function get_flashingLightsWarnShown():Bool
+  {
+    return Save?.instance?.options?.flashingLightsWarnShown ?? true;
+  }
+
+  static function set_flashingLightsWarnShown(value:Bool):Bool
+  {
+    var save:Save = Save.instance;
+    save.options.flashingLightsWarnShown = value;
+    save.flush();
+    return value;
+  }
+
   /**
    * If disabled, the camera bump synchronized to the beat.
    * @default `false`

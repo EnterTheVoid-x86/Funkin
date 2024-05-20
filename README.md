@@ -1,11 +1,20 @@
-# Friday Night Funkin' 
+# Friday Night Funkin': V-Slice++
 
 Friday Night Funkin' is a rhythm game. Built using HaxeFlixel for Ludem Dare 47.
 
+V-Slice++ is an engine adding QoL improvements and polish to the rough edges of the game.
+
 This game was made with love to Newgrounds and it's community. Extra love to Tom Fulp.
 
-- [Playable web demo on Newgrounds!](https://www.newgrounds.com/portal/view/770371)
-- [Demo download builds for Windows, Mac, and Linux from Itch.io!](https://ninja-muffin24.itch.io/funkin)
+- [Playable web demo of FNF on Newgrounds!](https://www.newgrounds.com/portal/view/770371)
+- [Demo download builds of FNF for Windows, Mac, and Linux from Itch.io!](https://ninja-muffin24.itch.io/funkin)
+
+# What's new?
+
+Currently not much, but this is everything currently added:
+- Ghost Tapping built into Preferences
+- Choosing between the Classic or Centered strumline style
+
 
 # Getting Started
 

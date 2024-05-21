@@ -22,6 +22,7 @@ import funkin.ui.AtlasText;
 import funkin.ui.debug.latency.LatencyState;
 import funkin.ui.MusicBeatSubState;
 import funkin.ui.transition.StickerSubState;
+import funkin.ui.options.OptionsState;
 
 /**
  * Parameters for initializing the PauseSubState.
@@ -51,6 +52,10 @@ class PauseSubState extends MusicBeatSubState
     {text: 'Restart Song', callback: restartPlayState},
     {text: 'Change Difficulty', callback: switchMode.bind(_, Difficulty)},
     {text: 'Enable Practice Mode', callback: enablePracticeMode, filter: () -> !(PlayState.instance?.isPracticeMode ?? false)},
+    {
+      text: 'Options',
+      callback: goToOptionsState
+    },
     {text: 'Exit to Menu', callback: quitToMenu},
   ];
 
@@ -171,7 +176,7 @@ class PauseSubState extends MusicBeatSubState
   // ===============
   // Audio Variables
   // ===============
-  var pauseMusic:FunkinSound;
+  static var pauseMusic:FunkinSound;
 
   // ===============
   // Constructor
@@ -243,7 +248,7 @@ class PauseSubState extends MusicBeatSubState
     }
 
     // Start playing at a random point in the song.
-    pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
+    pauseMusic.play(true, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
     pauseMusic.fadeIn(MUSIC_FADE_IN_TIME, 0, MUSIC_FINAL_VOLUME);
   }
 
@@ -576,6 +581,14 @@ class PauseSubState extends MusicBeatSubState
     PlayState.instance.needsReset = true;
 
     state.close();
+  }
+
+  static function goToOptionsState(state:PauseSubState):Void
+  {
+    pauseMusic.fadeOut(0.75, 0);
+    new FlxTimer().start(0.75, function(tmr:FlxTimer) {
+      FlxG.switchState(new OptionsState(true, PlayState.instance.currentSong, PlayState.instance.currentDifficulty, PlayState.instance.currentVariation));
+    });
   }
 
   /**

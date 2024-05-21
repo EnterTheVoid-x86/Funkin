@@ -28,6 +28,7 @@ import funkin.ui.title.TitleState;
 import funkin.ui.story.StoryMenuState;
 import funkin.ui.Prompt;
 import funkin.util.WindowUtil;
+import funkin.play.song.Song;
 #if discord_rpc
 import Discord.DiscordClient;
 #end
@@ -51,6 +52,8 @@ class MainMenuState extends MusicBeatState
     // Updating Discord Rich Presence
     DiscordClient.changePresence("In the Menus", null);
     #end
+
+    FlxG.cameras.reset(new FunkinCamera('mainMenu'));
 
     transIn = FlxTransitionableState.defaultTransIn;
     transOut = FlxTransitionableState.defaultTransOut;
@@ -130,7 +133,7 @@ class MainMenuState extends MusicBeatState
     #end
 
     createMenuItem('options', 'mainmenu/options', function() {
-      startExitState(() -> new funkin.ui.options.OptionsState());
+      startExitState(() -> new funkin.ui.options.OptionsState(false));
     });
 
     createMenuItem('credits', 'mainmenu/credits', function() {
@@ -182,7 +185,6 @@ class MainMenuState extends MusicBeatState
 
   function resetCamStuff():Void
   {
-    FlxG.cameras.reset(new FunkinCamera('mainMenu'));
     FlxG.camera.follow(camFollow, null, 0.06);
     FlxG.camera.snapToTarget();
   }
@@ -341,6 +343,8 @@ class MainMenuState extends MusicBeatState
       persistentUpdate = false;
 
       FlxG.state.openSubState(new DebugMenuSubState());
+
+      subStateClosed.addOnce(_ -> resetCamStuff());
     }
     #end
 

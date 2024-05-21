@@ -279,8 +279,6 @@ class HealthIcon extends FunkinSprite
 
       // Ensure the icon is positioned correctly after updating the hitbox.
       this.updatePosition();
-
-      PlayState.instance.updateScoreText(true);
     }
   }
 

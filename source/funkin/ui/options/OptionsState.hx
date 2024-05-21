@@ -13,6 +13,8 @@ import funkin.graphics.shaders.HSVShader;
 import funkin.util.WindowUtil;
 import funkin.audio.FunkinSound;
 import funkin.input.Controls;
+import funkin.play.song.Song;
+import funkin.ui.transition.LoadingState;
 
 class OptionsState extends MusicBeatState
 {
@@ -20,8 +22,23 @@ class OptionsState extends MusicBeatState
   var currentName:PageName = Options;
   var currentPage(get, never):Page;
 
+  var currentSong:Song;
+  var currentDifficulty:String;
+  var currentVariation:String;
+  var exitTo:Bool;
+
   inline function get_currentPage():Page
     return pages[currentName];
+
+  public function new(exitTo:Bool, ?currentSong:Song = null, ?currentDifficulty:String = null, ?currentVariation:String = null)
+  {
+    super();
+
+    this.currentSong = currentSong;
+    this.currentDifficulty = currentDifficulty;
+    this.currentVariation = currentVariation;
+    this.exitTo = exitTo;
+  }
 
   override function create():Void
   {
@@ -112,7 +129,31 @@ class OptionsState extends MusicBeatState
   {
     currentPage.enabled = false;
     // TODO: Animate this transition?
-    FlxG.switchState(() -> new MainMenuState());
+    if (exitTo == false)
+    {
+      FlxG.switchState(() -> new MainMenuState());
+    }
+    else
+    {
+      LoadingState.loadPlayState(
+        {
+          targetSong: currentSong,
+          targetDifficulty: currentDifficulty,
+          targetVariation: currentVariation,
+          practiceMode: false,
+          minimalMode: false,
+
+          #if (debug || FORCE_DEBUG_VERSION)
+          botPlayMode: FlxG.keys.pressed.SHIFT,
+          #else
+          botPlayMode: false,
+          #end
+          // TODO: Make these an option! It's currently only accessible via chart editor.
+          // startTimestamp: 0.0,
+          // playbackRate: 0.5,
+          // botPlayMode: true,
+        }, true);
+    }
   }
 }
 

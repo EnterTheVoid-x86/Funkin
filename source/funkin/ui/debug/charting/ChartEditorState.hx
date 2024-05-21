@@ -96,6 +96,7 @@ import funkin.util.FileUtil;
 import funkin.util.logging.CrashHandler;
 import funkin.util.SortUtil;
 import funkin.util.WindowUtil;
+import lime.app.Application;
 import haxe.DynamicAccess;
 import haxe.io.Bytes;
 import haxe.io.Path;
@@ -6452,12 +6453,12 @@ class ChartEditorState extends UIState // UIState derives from MusicBeatState
     {
       inner += '*';
     }
-    WindowUtil.setWindowTitle('Friday Night Funkin\' Chart Editor - ${inner}');
+    WindowUtil.setWindowTitle('Friday Night Funkin\': V-Slice++ Chart Editor - ${inner}');
   }
 
   function resetWindowTitle():Void
   {
-    WindowUtil.setWindowTitle('Friday Night Funkin\'');
+    WindowUtil.setWindowTitle('Friday Night Funkin\': V-Slice++');
   }
 
   /**

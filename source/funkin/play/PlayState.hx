@@ -851,7 +851,7 @@ class PlayState extends MusicBeatSubState
       str += ' (' + percent + '%) - ' + ratingFC;
     }
 
-    var tempScore:String = 'Score: ' + (songScore != null ? songScore : 0) + ' | Misses: ' + misses + ' | Accuracy: ' + str;
+    var tempScore:String = 'Score: ' + (songScore != 0 ? songScore : 0) + ' | Misses: ' + misses + ' | Accuracy: ' + str;
 
     scoreText.text = tempScore + '\n';
   }
@@ -930,6 +930,15 @@ class PlayState extends MusicBeatSubState
       dispatchEvent(new ScriptEvent(SONG_RETRY));
 
       resetCamera();
+
+      ratingPercent = 0;
+      ratingName = "?";
+      ratingFC = "Clear";
+      totalNotesHit = 0;
+      totalNotesPlayed = 0;
+      misses = 0;
+
+      updateScoreText();
 
       var fromDeathState = isPlayerDying;
 
@@ -1105,7 +1114,7 @@ class PlayState extends MusicBeatSubState
       // RESET = Quick Game Over Screen
       if (controls.RESET)
       {
-        health = Constants.HEALTH_MIN;
+        PlayState.instance.needsReset = true;
         trace('RESET = True');
       }
 
@@ -1117,7 +1126,7 @@ class PlayState extends MusicBeatSubState
       }
       #end
 
-      if (health <= Constants.HEALTH_MIN && !isPracticeMode && !isPlayerDying)
+      if (health <= Constants.HEALTH_MIN && !isPracticeMode && !isPlayerDying && !isChartingMode)
       {
         vocals.pause();
 
@@ -1656,31 +1665,13 @@ class PlayState extends MusicBeatSubState
   function updateHealthBarColors()
   {
     bfColor = getDominantColor(iconP1);
-    trace(bfColor);
     dadColor = getDominantColor(iconP2);
-    trace(dadColor);
-
-    // Handle nullable return values
-    if (bfColor == null || dadColor == null)
-    {
-      // Handle null case, possibly with default colors
-      bfColor = defaultHBGreen;
-      dadColor = defaultHBRed;
-    }
 
     fillHealthBar();
   }
 
   function fillHealthBar()
   {
-    bfColor = (bfColor != null ? bfColor : defaultHBGreen);
-    dadColor = (dadColor != null ? dadColor : defaultHBRed);
-
-    trace(bfColor);
-    trace(dadColor);
-
-    if (!inPlay || healthBar == null || dadColor == null || bfColor == null) return;
-
     healthBar.createFilledBar(dadColor, bfColor);
   }
 

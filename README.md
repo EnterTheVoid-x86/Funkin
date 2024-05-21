@@ -14,6 +14,10 @@ This game was made with love to Newgrounds and it's community. Extra love to Tom
 Currently not much, but this is everything currently added:
 - Ghost Tapping built into Preferences
 - Choosing between the Classic or Centered strumline style
+- Icon Colored Health Bar
+- Bugfixes for the Chart Editor
+- Options from the Pause Menu
+- General tweaks
 
 
 # Getting Started

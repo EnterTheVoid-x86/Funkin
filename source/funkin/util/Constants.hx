@@ -29,6 +29,9 @@ class Constants
 
   public static var GITVERSION(get, never):String;
 
+  // Determine if this build is a prototype or not.
+  public static var ISPROTOTYPE(get, never):Bool;
+
   /**
    * The generatedBy string embedded in the chart files made by this application.
    */
@@ -59,7 +62,12 @@ class Constants
 
   static function get_GITVERSION():String
   {
-    return '(${GIT_BRANCH} : ${GIT_HASH}${GIT_HAS_LOCAL_CHANGES ? ' : MODIFIED' : ''})' + ' PROTOTYPE';
+    return ' (${GIT_BRANCH} : ${GIT_HASH}${GIT_HAS_LOCAL_CHANGES ? ' : MODIFIED' : ''})' + ' PROTOTYPE';
+  }
+
+  static function get_ISPROTOTYPE():Bool
+  {
+    return true;
   }
 
   /**

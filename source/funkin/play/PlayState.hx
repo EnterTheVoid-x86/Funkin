@@ -772,6 +772,8 @@ class PlayState extends MusicBeatSubState
 
     initialized = true;
 
+    inPlay = true; // Testing...
+
     // This step ensures z-indexes are applied properly,
     // and it's important to call it last so all elements get affected.
     refresh();

@@ -27,6 +27,8 @@ class Constants
    */
   public static var VERSION(get, never):String;
 
+  public static var GITVERSION(get, never):String;
+
   /**
    * The generatedBy string embedded in the chart files made by this application.
    */
@@ -54,6 +56,11 @@ class Constants
     return 'v${Application.current.meta.get('version')}' + VERSION_SUFFIX;
   }
   #end
+
+  static function get_GITVERSION():String
+  {
+    return '(${GIT_BRANCH} : ${GIT_HASH}${GIT_HAS_LOCAL_CHANGES ? ' : MODIFIED' : ''})' + ' PROTOTYPE';
+  }
 
   /**
    * URL DATA

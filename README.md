@@ -15,7 +15,7 @@ Currently not much, but this is everything currently added:
 - Ghost Tapping built into Preferences
 - Choosing between the Classic or Centered strumline style
 - Icon Colored Health Bar
-- Bugfixes for the Chart Editor
+- Bugfixes for the Main Menu
 - Options from the Pause Menu
 - General tweaks
 

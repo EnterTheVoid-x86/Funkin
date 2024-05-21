@@ -772,7 +772,7 @@ class PlayState extends MusicBeatSubState
 
     initialized = true;
 
-    inPlay = true; // Testing...
+    inPlay = true; // This is required for the chart editor's playtest feature.
 
     // This step ensures z-indexes are applied properly,
     // and it's important to call it last so all elements get affected.

@@ -33,7 +33,7 @@ class CreditsState extends MusicBeatState
    * To use a font from the `assets` folder, use `Paths.font(...)`.
    * Choose something that will render Unicode properly.
    */
-  static final CREDITS_FONT = 'Consolas';
+  static final CREDITS_FONT = Paths.font("Inconsolata");
 
   /**
    * The size of the font.

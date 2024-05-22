@@ -1,6 +1,10 @@
 package funkin.play;
 
 import flixel.addons.display.FlxPieDial;
+import flixel.addons.display.shapes.*;
+import flixel.addons.display.shapes.FlxShape;
+import flixel.util.FlxSpriteUtil.LineStyle;
+import flixel.util.FlxColor;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.Transition;
 import flixel.FlxCamera;
@@ -468,6 +472,8 @@ class PlayState extends MusicBeatSubState
    */
   var scoreText:FlxText;
 
+  public var background:FlxSprite;
+
   /**
    * The bar which displays the player's health.
    * Dynamically updated based on the value of `healthLerp` (which is based on `health`).
@@ -846,16 +852,42 @@ class PlayState extends MusicBeatSubState
   {
     calculateRating();
 
-    var str:String = ratingName;
+    var percent:Float = 0;
     if (totalNotesPlayed != 0)
     {
-      var percent:Float = floorDecimal(ratingPercent * 100, 2);
-      str += ' (' + percent + '%) - ' + ratingFC;
+      percent = floorDecimal(ratingPercent * 100, 2);
     }
 
-    var tempScore:String = 'Score: ' + (songScore != 0 ? songScore : 0) + ' | Misses: ' + misses + ' | Accuracy: ' + str;
+    var tempScore:String = 'SCORE: '
+      + (songScore != 0 ? songScore : 0)
+      + ' | MISSES: '
+      + misses
+      + ' | ACCURACY: '
+      + percent
+      + '% | RATING: '
+      + ratingFC;
 
     scoreText.text = tempScore + '\n';
+    scoreText.x = (FlxG.width - scoreText.width) / 2;
+
+    // Add padding to the background sprite
+    var paddingX:Float = 10; // Adjust as needed
+    var paddingY:Float = 10; // Adjust as needed
+    var backgroundWidth:Float = scoreText.width + paddingX * 2;
+    var backgroundHeight:Float = scoreText.height + paddingY * 2;
+    var backgroundX:Float = (FlxG.width - backgroundWidth) / 2;
+    var backgroundY:Float = scoreText.y - paddingY; // Adjust if necessary
+    background.makeGraphic(Std.int(backgroundWidth), Std.int(backgroundHeight), FlxColor.fromRGB(50, 50, 50, 128));
+
+    // Position the background sprite
+    background.x = backgroundX;
+    background.y = backgroundY;
+
+    // Debugging output
+    trace("ScoreText Position: " + scoreText.x + ", " + scoreText.y);
+    trace("ScoreText Size: " + scoreText.width + "x" + scoreText.height);
+    trace("Background Position: " + background.x + ", " + background.y);
+    trace("Background Size: " + background.width + "x" + background.height);
   }
 
   function calculateRating()
@@ -863,22 +895,19 @@ class PlayState extends MusicBeatSubState
     if (totalNotesPlayed != 0)
     {
       ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalNotesPlayed));
-
-      ratingName = ratingStuff[ratingStuff.length - 1][0]; // Uses last string
       if (ratingPercent < 1)
       {
         for (i in 0...ratingStuff.length - 1)
         {
           if (ratingPercent < ratingStuff[i][1])
           {
-            ratingName = ratingStuff[i][0];
             break;
           }
         }
       }
     }
 
-    ratingFC = '';
+    ratingFC = '?';
     if (misses == 0)
     {
       var tallies = Highscore.tallies;
@@ -934,7 +963,6 @@ class PlayState extends MusicBeatSubState
       resetCamera();
 
       ratingPercent = 0;
-      ratingName = "?";
       ratingFC = "Clear";
       totalNotesHit = 0;
       totalNotesPlayed = 0;
@@ -1636,6 +1664,7 @@ class PlayState extends MusicBeatSubState
   function initHealthBar():Void
   {
     var healthBarYPos:Float = Preferences.downscroll ? FlxG.height * 0.1 : FlxG.height * 0.9;
+    healthBarYPos -= 20; // Move health bar up by 20 pixels
     healthBarBG = FunkinSprite.create(0, healthBarYPos, 'healthBar');
     healthBarBG.screenCenter(X);
     healthBarBG.scrollFactor.set(0, 0);
@@ -1650,11 +1679,21 @@ class PlayState extends MusicBeatSubState
     add(healthBar);
 
     // The score text below the health bar.
-    scoreText = new FlxText(0, healthBar.y + 40, FlxG.width, "", 20);
+    scoreText = new FlxText(0, healthBar.y + 45, "", 20);
     scoreText.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    scoreText.x = (FlxG.width - scoreText.width) / 2;
     scoreText.borderSize = 1.25;
     scoreText.scrollFactor.set();
     scoreText.zIndex = 1000;
+
+    // Create a semi-transparent background for the score text using FlxSprite
+    background = new FlxSprite((FlxG.width - scoreText.width) / 2, scoreText.y);
+    background.makeGraphic(Std.int(scoreText.width), Std.int(scoreText.height), FlxColor.fromRGB(50, 50, 50, 128)); // Semi-transparent dark gray
+    background.scrollFactor.set();
+    background.zIndex = 999; // Ensure it's behind the text
+
+    // Add the background and the score text to the scene
+    add(background);
     updateScoreText(false);
     add(scoreText);
 
@@ -1662,6 +1701,7 @@ class PlayState extends MusicBeatSubState
     healthBar.cameras = [camHUD];
     healthBarBG.cameras = [camHUD];
     scoreText.cameras = [camHUD];
+    background.cameras = [camHUD];
   }
 
   function updateHealthBarColors()

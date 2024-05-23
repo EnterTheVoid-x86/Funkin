@@ -153,22 +153,11 @@ class PlayState extends MusicBeatSubState
    */
   public static var instance:PlayState = null;
 
-  public static var ratingStuff:Array<Dynamic> = [
-    ['You\'re awful!', 0.2], // From 0% to 19%
-    ['Shit.', 0.4], // From 20% to 39%
-    ['Yikes...', 0.5], // From 40% to 49%
-    ['You can do better!', 0.6], // From 50% to 59%
-    ['Almost...', 0.7], // From 60% to 69%
-    ['Good', 0.8], // From 70% to 79%
-    ['Great!', 0.9], // From 80% to 89%
-    ['Perfect!', 1], // From 90% to 99%
-    ['Marvelous!', 1] // The value on this one isn't used actually, since Perfect is always "1"
-  ];
-
   var misses:Int = 0;
+
   var ratingPercent:Float;
   var ratingName:String = "?";
-  var ratingFC:String = "Clear";
+  var ratingFC:String = "?";
 
   var totalNotesHit:Float = 0.0;
   var totalNotesPlayed:Int = 0;
@@ -895,16 +884,6 @@ class PlayState extends MusicBeatSubState
     if (totalNotesPlayed != 0)
     {
       ratingPercent = Math.min(1, Math.max(0, totalNotesHit / totalNotesPlayed));
-      if (ratingPercent < 1)
-      {
-        for (i in 0...ratingStuff.length - 1)
-        {
-          if (ratingPercent < ratingStuff[i][1])
-          {
-            break;
-          }
-        }
-      }
     }
 
     ratingFC = '?';
@@ -925,7 +904,7 @@ class PlayState extends MusicBeatSubState
     {
       if (misses < 10) ratingFC = 'SDCB';
       else
-        ratingFC = 'Clear';
+        ratingFC = 'CLEAR';
     }
   }
 

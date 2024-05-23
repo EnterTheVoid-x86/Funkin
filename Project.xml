@@ -132,6 +132,8 @@
 
 	<haxelib name="hxcpp-debug-server" if="desktop debug" /> <!-- VSCode debug support -->
 
+	<haxedef name="SHADERS_ENABLED" />
+
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->

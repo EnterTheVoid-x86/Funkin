@@ -34,6 +34,7 @@ import funkin.data.song.SongRegistry;
 import funkin.data.stage.StageRegistry;
 import funkin.graphics.FunkinCamera;
 import funkin.graphics.FunkinSprite;
+import funkin.graphics.shaders.DNBStyleShaders;
 import funkin.Highscore.Tallies;
 import funkin.input.PreciseInputManager;
 import funkin.modding.events.ScriptEvent;
@@ -67,6 +68,7 @@ import funkin.util.SerializerUtil;
 import haxe.Int64;
 import lime.ui.Haptic;
 import openfl.display.BitmapData;
+import openfl.filters.ShaderFilter;
 import openfl.geom.Rectangle;
 import openfl.Lib;
 #if discord_rpc
@@ -177,6 +179,8 @@ class PlayState extends MusicBeatSubState
    * The currently selected stage.
    */
   public var currentSong:Song = null;
+
+  public var fuckingwork:GlitchEffect = new GlitchEffect();
 
   /**
    * The currently selected difficulty.
@@ -738,6 +742,7 @@ class PlayState extends MusicBeatSubState
     startingSong = true;
 
     // TODO: We hardcoded the transition into Winter Horrorland. Do this with a ScriptedSong instead.
+
     if ((currentSong?.id ?? '').toLowerCase() == 'winter-horrorland')
     {
       // VanillaCutscenes will call startCountdown later.
@@ -772,6 +777,14 @@ class PlayState extends MusicBeatSubState
     // This step ensures z-indexes are applied properly,
     // and it's important to call it last so all elements get affected.
     refresh();
+
+    if (Stage.instance?.id == "spookyMansion")
+    {
+      fuckingwork.waveAmplitude = 0.1;
+      fuckingwork.waveFrequency = 5;
+      fuckingwork.waveSpeed = 2;
+      Stage.instance?.doThisStupidFuckingShitIHateThisLanguage(fuckingwork.shader);
+    }
   }
 
   public override function draw():Void
@@ -871,12 +884,6 @@ class PlayState extends MusicBeatSubState
     // Position the background sprite
     background.x = backgroundX;
     background.y = backgroundY;
-
-    // Debugging output
-    trace("ScoreText Position: " + scoreText.x + ", " + scoreText.y);
-    trace("ScoreText Size: " + scoreText.width + "x" + scoreText.height);
-    trace("Background Position: " + background.x + ", " + background.y);
-    trace("Background Size: " + background.width + "x" + background.height);
   }
 
   function calculateRating()
@@ -993,6 +1000,8 @@ class PlayState extends MusicBeatSubState
         playerStrumline.vwooshNotes();
         opponentStrumline.vwooshNotes();
       }
+
+      // Stage.instance?.updateThatShittyAssVariable(elapsed);
 
       playerStrumline.clean();
       opponentStrumline.clean();
@@ -1200,6 +1209,12 @@ class PlayState extends MusicBeatSubState
 
     justUnpaused = false;
   }
+
+  // public function updatethefuckingvariable(elapsed:Float):Void
+  // {
+  //   fuckingwork.update(elapsed);
+  //   Stage.instance?.doThisStupidFuckingShitIHateThisLanguage(fuckingwork.shader);
+  // }
 
   function moveToGameOver():Void
   {

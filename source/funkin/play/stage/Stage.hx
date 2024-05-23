@@ -12,6 +12,7 @@ import flixel.math.FlxPoint;
 import flixel.system.FlxAssets.FlxShader;
 import flixel.util.FlxSort;
 import openfl.display.BitmapData;
+import openfl.filters.ShaderFilter;
 import flixel.util.FlxColor;
 import funkin.modding.IScriptedClass;
 import funkin.modding.events.ScriptEvent;
@@ -22,6 +23,7 @@ import funkin.data.IRegistryEntry;
 import funkin.data.stage.StageData;
 import funkin.data.stage.StageData.StageDataCharacter;
 import funkin.data.stage.StageRegistry;
+import funkin.graphics.shaders.DNBStyleShaders;
 import funkin.play.stage.StageProp;
 import funkin.util.SortUtil;
 import funkin.util.assets.FlxAnimationUtil;
@@ -40,6 +42,12 @@ class Stage extends FlxSpriteGroup implements IPlayStateScriptedClass implements
   public final _data:StageData;
 
   public var stageName(get, never):String;
+
+  public var wiggle:PulseEffect = new PulseEffect();
+
+  public static var instance:Stage;
+
+  public var elapsed:Float;
 
   function get_stageName():String
   {
@@ -73,6 +81,7 @@ class Stage extends FlxSpriteGroup implements IPlayStateScriptedClass implements
    */
   public function new(id:String)
   {
+    // FlxG.stage.addEventListener(flixel.events.FlxUpdateEvent.UPDATE, everyFrame);
     super();
 
     this.id = id;
@@ -95,6 +104,8 @@ class Stage extends FlxSpriteGroup implements IPlayStateScriptedClass implements
 
     buildStage();
     this.refresh();
+
+    instance = this;
 
     debugIconGroup = new FlxSpriteGroup();
     debugIconGroup.visible = false;
@@ -309,6 +320,11 @@ class Stage extends FlxSpriteGroup implements IPlayStateScriptedClass implements
         addProp(propSprite, dataProp.name);
       }
     }
+  }
+
+  public function doThisStupidFuckingShitIHateThisLanguage(fuckingwork:FlxShader)
+  {
+    getNamedProp('halloweenBG').shader = fuckingwork;
   }
 
   /**
@@ -782,7 +798,21 @@ class Stage extends FlxSpriteGroup implements IPlayStateScriptedClass implements
     }
   }
 
-  public function onUpdate(event:UpdateScriptEvent) {}
+  // private function everyFrame(event:flixel.events.FlxUpdateEvent):Void
+  // {
+  //   elapsed++;
+  // }
+
+  public function onUpdate(event:UpdateScriptEvent)
+  {
+    // PlayState.instance?.updatethefuckingvariable(FlxG.elapsed);
+  }
+
+  // public function updateThatShittyAssVariable(elapsedFromOther:Float)
+  // {
+  //   // elapsed = elapsedFromOther;
+  //   trace(elapsed);
+  // }
 
   public override function kill()
   {

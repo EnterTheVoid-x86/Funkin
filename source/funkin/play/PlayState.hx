@@ -778,13 +778,13 @@ class PlayState extends MusicBeatSubState
     // and it's important to call it last so all elements get affected.
     refresh();
 
-    if (Stage.instance?.id == "spookyMansion")
-    {
-      fuckingwork.waveAmplitude = 0.1;
-      fuckingwork.waveFrequency = 5;
-      fuckingwork.waveSpeed = 2;
-      Stage.instance?.doThisStupidFuckingShitIHateThisLanguage(fuckingwork.shader);
-    }
+    // if (Stage.instance?.id == "spookyMansion")
+    // {
+    //   fuckingwork.waveAmplitude = 0.1;
+    //   fuckingwork.waveFrequency = 5;
+    //   fuckingwork.waveSpeed = 2;
+    //   Stage.instance?.doThisStupidFuckingShitIHateThisLanguage(fuckingwork.shader);
+    // }
   }
 
   public override function draw():Void
